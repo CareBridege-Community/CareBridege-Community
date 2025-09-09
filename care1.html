@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareBridge Community</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #8B5E3C, #E6D3B3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+    header h1 { margin: 0; font-size: 2rem; }
+    header p { margin: 0.3rem 0 0; font-size: 1rem; }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      margin: 1rem auto;
+    }
+
+    h2 { text-align: center; color: #5C4033; }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input, select, textarea {
+      margin: 0.6rem 0;
+      padding: 0.9rem;
+      border: 1px solid #c9a66b;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 0.8rem;
+      padding: 1rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-primary { background: #8B5E3C; color: white; }
+    .btn-primary:hover { background: #5C4033; }
+    .btn-secondary { background: #c9a66b; color: #fff; }
+    .btn-secondary:hover { background: #a67c52; }
+
+    .hidden { display: none; }
+    .success { color: green; margin-top: 10px; }
+    .error { color: red; margin-top: 10px; }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background: linear-gradient(180deg, #5c4033, #2c1b14);
+      padding: 1.5rem;
+      color: white;
+      box-shadow: 3px 0 10px rgba(0,0,0,0.2);
+    }
+    .sidebar h2 { text-align: center; font-size: 1.2rem; }
+    .sidebar ul { list-style: none; padding: 0; }
+    .sidebar li { margin: 1rem 0; }
+    .sidebar button {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 6px;
+      background: #8b5e3c;
+      color: white;
+    }
+    .sidebar button:hover { background: #a97155; }
+    .logout-btn { background: #e74c3c; }
+    .logout-btn:hover { background: #c0392b; }
+
+    .flex {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .box {
+      flex: 1;
+      background: #f9f9f9;
+      padding: 1rem;
+      border-radius: 10px;
+      min-width: 250px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="D:\logo.jpg" alt="CareBridege Logo" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 10px;">
+    <h1>Welcome To CareBridege Community</h1>
+    <p>Building stronger communities together</p>
+  </header>
+
+  <!-- Sidebar -->
+  <div class="sidebar hidden" id="sidebar">
+    <h2>Choose Role</h2>
+    <ul>
+      <li><button onclick="showForm('donorForm')">Donor</button></li>
+      <li><button onclick="showForm('volunteerForm')">Volunteer</button></li>
+      <li><button onclick="showForm('receiverForm')">Receiver</button></li>
+      <li><button onclick="showForm('ngoForm')">NGO</button></li>
+      <li><button class="logout-btn" onclick="logout()">Logout</button></li>
+    </ul>
+  </div>
+
+  <!-- Login -->
+  <div class="container" id="loginPage">
+    <h2>Login</h2>
+    <form onsubmit="login(event)">
+      <input type="text" id="username" placeholder="Enter Username" required>
+      <input type="password" id="password" placeholder="Enter Password" required>
+      <button class="btn-primary" type="submit">Login</button>
+    </form>
+    <button class="btn-secondary" onclick="showRegister()">Create New Account</button>
+    <div class="success" id="loginSuccess"></div>
+    <div class="error" id="loginError"></div>
+  </div>
+
+  <!-- Register -->
+  <div class="container hidden" id="registerPage">
+    <h2>Create New Account</h2>
+    <form onsubmit="register(event)">
+      <input type="text" id="regUsername" placeholder="Choose Username" required>
+      <input type="password" id="regPassword" placeholder="Choose Password" required>
+      <button class="btn-primary" type="submit">Register</button>
+    </form>
+    <button class="btn-secondary" onclick="goBack('loginPage')">⬅ Back to Login</button>
+    <div class="success" id="registerSuccess"></div>
+    <div class="error" id="registerError"></div>
+  </div>
+
+  <!-- Donor Form -->
+  <div class="container hidden" id="donorForm">
+    <h2>Donor Form</h2>
+    <form onsubmit="saveForm(event, 'donors')">
+      <select name="category" required>
+        <option value="">Select Category</option>
+        <option>Education</option>
+        <option>Healthcare</option>
+        <option>Food</option>
+        <option>Clothing</option>
+      </select>
+      <textarea name="reason" placeholder="Why are you donating?" required></textarea>
+      <input type="text" name="location" placeholder="Location" required>
+      <input type="text" name="contact" placeholder="Contact Number" required>
+      <button class="btn-primary" type="submit">Submit</button>
+    </form>
+    <div class="success" id="donorSuccess"></div>
+  </div>
+
+  <!-- Volunteer Form -->
+  <div class="container hidden" id="volunteerForm">
+    <h2>Volunteer Form</h2>
+    <div class="flex">
+      <form class="box" onsubmit="saveVolunteer(event)">
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="text" name="location" placeholder="Location" required>
+        <input type="text" name="contact" placeholder="Contact Number" required>
+        <input type="number" name="age" placeholder="Age" required>
+        <select id="ngoSelect" name="ngo" required></select>
+        <button class="btn-primary" type="submit">Submit</button>
+      </form>
+      <div class="box" id="ngoDetails">
+        <h3>NGO Details</h3>
+        <p>Select an NGO to view details here.</p>
+      </div>
+    </div>
+    <div class="success" id="volunteerSuccess"></div>
+  </div>
+
+  <!-- Receiver Form -->
+  <div class="container hidden" id="receiverForm">
+    <h2>Receiver Form</h2>
+    <div class="flex">
+      <form class="box" onsubmit="saveReceiver(event)">
+        <select id="needCategory" name="category" required onchange="populateDonors()">
+          <option value="">Select Need</option>
+          <option>Education</option>
+          <option>Healthcare</option>
+          <option>Food</option>
+          <option>Clothing</option>
+        </select>
+        <textarea name="need" placeholder="What do you need?" required></textarea>
+        <input type="text" name="location" placeholder="Location" required>
+        <input type="text" name="contact" placeholder="Contact Number" required>
+        <input type="date" name="date" required>
+        <select id="donorSelect" name="donor" required></select>
+        <button class="btn-primary" type="submit">Submit</button>
+      </form>
+      <div class="box" id="donorDetails">
+        <h3>Donor Details</h3>
+        <p>Select a donor to view details here.</p>
+      </div>
+    </div>
+    <div class="success" id="receiverSuccess"></div>
+  </div>
+
+  <!-- NGO Form -->
+  <div class="container hidden" id="ngoForm">
+    <h2>NGO Proposal Form</h2>
+    <form onsubmit="saveForm(event, 'ngos')">
+      <input type="text" name="proposal" placeholder="Organisation Name" required>
+      <textarea name="goal" placeholder="Goal of the Proposal" required></textarea>
+      <input type="text" name="location" placeholder="Location" required>
+      <input type="text" name="contact" placeholder="Contact Number" required>
+      <textarea name="work" placeholder="Type of Work Needed" required></textarea>
+      <button class="btn-primary" type="submit">Submit</button>
+    </form>
+    <div class="success" id="ngoSuccess"></div>
+  </div>
+
+  <script>
+    // LOGIN/REGISTER
+    function showRegister() {
+      document.getElementById('loginPage').classList.add('hidden');
+      document.getElementById('registerPage').classList.remove('hidden');
+    }
+    function register(event) {
+      event.preventDefault();
+      let username = document.getElementById('regUsername').value.trim();
+      let password = document.getElementById('regPassword').value.trim();
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+      if (users.find(u => u.username === username)) {
+        document.getElementById('registerError').innerText = "Username already exists!";
+      } else {
+        users.push({ username, password });
+        localStorage.setItem('users', JSON.stringify(users));
+        document.getElementById('registerSuccess').innerText = "Account created! Please login.";
+      }
+    }
+    function login(event) {
+      event.preventDefault();
+      let username = document.getElementById('username').value.trim();
+      let password = document.getElementById('password').value.trim();
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+      let user = users.find(u => u.username === username && u.password === password);
+      if (user) {
+        document.getElementById('loginSuccess').innerText = "Login successful!";
+        hideAll();
+        document.getElementById('sidebar').classList.remove('hidden');
+      } else {
+        document.getElementById('loginError').innerText = "Invalid credentials!";
+      }
+    }
+    function logout() {
+      hideAll();
+      document.getElementById('sidebar').classList.add('hidden');
+      document.getElementById('loginPage').classList.remove('hidden');
+    }
+
+    // COMMON
+    function hideAll() {
+      document.querySelectorAll('.container').forEach(el => el.classList.add('hidden'));
+    }
+    function showForm(id) {
+      hideAll();
+      document.getElementById(id).classList.remove('hidden');
+      if (id === 'volunteerForm') loadNGOs();
+      if (id === 'receiverForm') populateDonors();
+    }
+
+    // SAVE FORMS
+    function saveForm(event, key) {
+      event.preventDefault();
+      const form = event.target;
+      const data = Object.fromEntries(new FormData(form).entries());
+      let arr = JSON.parse(localStorage.getItem(key)) || [];
+      arr.push(data);
+      localStorage.setItem(key, JSON.stringify(arr));
+      form.reset();
+      form.parentElement.querySelector(".success").innerText = "Form submitted successfully!";
+    }
+
+    // VOLUNTEERS & NGOs
+    function loadNGOs() {
+      let ngos = JSON.parse(localStorage.getItem('ngos')) || [];
+      let ngoSelect = document.getElementById('ngoSelect');
+      ngoSelect.innerHTML = "<option value=''>Select NGO</option>";
+      ngos.forEach((ngo, i) => {
+        ngoSelect.innerHTML += `<option value="${i}">${ngo.proposal}</option>`;
+      });
+      ngoSelect.onchange = () => {
+        let idx = ngoSelect.value;
+        if (idx !== '') {
+          let ngo = ngos[idx];
+          document.getElementById('ngoDetails').innerHTML = `
+            <h3>${ngo.proposal}</h3>
+            <p><b>Goal:</b> ${ngo.goal}</p>
+            <p><b>Location:</b> ${ngo.location}</p>
+            <p><b>Contact:</b> ${ngo.contact}</p>
+            <p><b>Work:</b> ${ngo.work}</p>
+            <p><b>Volunteers Joined:</b> ${ngo.volunteers || 0}</p>
+          `;
+        }
+      };
+    }
+    function saveVolunteer(event) {
+      event.preventDefault();
+      let data = Object.fromEntries(new FormData(event.target).entries());
+      let volunteers = JSON.parse(localStorage.getItem('volunteers')) || [];
+      volunteers.push(data);
+      localStorage.setItem('volunteers', JSON.stringify(volunteers));
+      let ngos = JSON.parse(localStorage.getItem('ngos')) || [];
+      if (data.ngo && ngos[data.ngo]) {
+        ngos[data.ngo].volunteers = (ngos[data.ngo].volunteers || 0) + 1;
+        localStorage.setItem('ngos', JSON.stringify(ngos));
+      }
+      event.target.reset();
+      document.getElementById('volunteerSuccess').innerText = "Volunteer registered successfully!";
+      loadNGOs();
+    }
+
+    // RECEIVERS & DONORS
+    function populateDonors() {
+      let donors = JSON.parse(localStorage.getItem('donors')) || [];
+      let category = document.getElementById('needCategory').value;
+      let donorSelect = document.getElementById('donorSelect');
+      donorSelect.innerHTML = "<option value=''>Select Donor</option>";
+      donors.forEach((donor, i) => {
+        if (donor.category === category) {
+          donorSelect.innerHTML += `<option value="${i}">${donor.contact} (${donor.location})</option>`;
+        }
+      });
+      donorSelect.onchange = () => {
+        let idx = donorSelect.value;
+        if (idx !== '') {
+          let donor = donors[idx];
+          document.getElementById('donorDetails').innerHTML = `
+            <h3>Donor Info</h3>
+            <p><b>Category:</b> ${donor.category}</p>
+            <p><b>Reason:</b> ${donor.reason}</p>
+            <p><b>Location:</b> ${donor.location}</p>
+            <p><b>Contact:</b> ${donor.contact}</p>
+          `;
+        }
+      };
+    }
+    function saveReceiver(event) {
+      event.preventDefault();
+      let data = Object.fromEntries(new FormData(event.target).entries());
+      let receivers = JSON.parse(localStorage.getItem('receivers')) || [];
+      receivers.push(data);
+      localStorage.setItem('receivers', JSON.stringify(receivers));
+      event.target.reset();
+      document.getElementById('receiverSuccess').innerText = "Receiver registered successfully!";
+    }
+  </script>
+</body>
+</html>
